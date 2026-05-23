@@ -7,6 +7,6 @@
 }
 
 /* hinding vertical scroll bar */
-::webkit-scrollbar{
+::-webkit-scrollbar{
   display:none;
 }
