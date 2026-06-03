@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 // Signup a new user
 export const signup = async (req,res) => {
-    const {fullName,email,password} = req.body;
+    const {fullName,email,password,bio} = req.body;
 
     try {
         if(!fullName || !email || !password || !bio){
@@ -29,3 +29,23 @@ export const signup = async (req,res) => {
         res.json({success: false,message: error.message});
     }
 }
+
+export const login = async (req,res) => {
+    try {
+        const {email,password} = req.body;
+        const userData = await User.findOne({email});
+
+        const isPasswordCorrect = await bcrypt.compare(password,userData.password);
+
+        if(!isPasswordCorrect){
+            return res.json({sucess: false,message: "Invalid credentials"});
+        }
+        const token = generateToken(userData._id);
+
+        res.json({success: true,userData,token,message: "Login successfully"});
+    } catch (error) {
+        console.log(error.message);
+        res.json({success: false,message: error.message});
+    }
+}
+
