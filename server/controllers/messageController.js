@@ -1,5 +1,6 @@
 import Message from "../models/message.js";
 import User from "../models/user.js";
+import cloudinary from "../lib/cloudinary.js"
 
 
 //Get all users except the logged in user
@@ -42,4 +43,43 @@ export const getMessages = async (req,res) => {
         console.log(error.message);
         res.json({success: false, message: error.message});
     }   
+}
+
+// api to mark messages as seen  using message id 
+export const markMessageAsSeen = async (req,res) => {
+    try {
+        const { id } = req.params;
+        await Message.findByIdAndUpdate(id, {seen: true});
+        res.json({success: true});
+
+    } catch (error) {
+        console.log(error.message);
+        res.json({success: false, message: error.message});
+    }
+}
+
+// Send message to selected user
+export const sendMessage = async () => {
+    try {
+        const {text , image} = req.body;
+        const receiverId = req.params.id;
+        const senderId = req.user._id;// we will get it from middleware
+
+        let imageUrl;
+        if(image){
+            const uploadResponse = await cloudinary.uploader.upload(image);
+            imageUrl = uploadResponse.secure_url;
+        }
+
+        const newMessage = await Message.create({
+            senderId,
+            receiverId,
+            text,
+            image : imageUrl
+        })
+
+    } catch (error) {
+        console.log(error.message);
+        res.json({success: false, message: error.message});
+    }
 }
