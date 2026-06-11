@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import axios from 'axios';
 import toast from "react-hot-toast";
 import {io} from "socket.io-client";
-import { set } from "mongoose";
+// import { set } from "mongoose";
 
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
