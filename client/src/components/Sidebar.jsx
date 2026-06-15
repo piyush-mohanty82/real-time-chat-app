@@ -7,12 +7,12 @@ import { ChatContext } from '../../context/ChatContext';
 const Sidebar = () => {
 
   const {getUsers,users,selectedUser,setSelectedUser,unseenMessages,setUnseenMessages} = useContext(ChatContext);
-
+  const [showMenu, setShowMenu] = useState(false);
   const {logout,onlineUsers} = useContext(AuthContext);
 
-  const [input,setInput] = useState(false);
+  const [input,setInput] = useState('');
 
-  const filteredUsers = input ? users.filter((user)=>user.fullName.toLowerCase().includes(input.toLowercase())): users;
+  const filteredUsers = input ? users.filter((user)=>user.fullName.toLowerCase().includes(input.toLowerCase())): users;
 
   useEffect(() => {
     getUsers();
@@ -24,12 +24,33 @@ const Sidebar = () => {
         <div className='flex justify-between  items-center'>
           <img src={assets.logo} alt="logo" className='max-w-40'/>
           <div className='relative  py-2 group'>
-            <img src={assets.menu_icon} alt="Menu" className='max-h-5 cursor-pointer'/>
-            <div className='absolute top-full right-0 z-20 w-32 p-5 rounded-md bg-[#282142] border border-gray-600 text-gray-100 hidden group-hover:block'>
-              <p onClick={()=>navigate('/profile')} className='cursor-pointer text-sm'>Edit Profile</p>
+          <img
+              src={assets.menu_icon}
+              alt="Menu"
+              className='max-h-5 cursor-pointer'
+              onClick={() => setShowMenu(!showMenu)}
+            />
+            {showMenu && (<div className='absolute top-full right-0 z-20 w-32 p-5 rounded-md bg-[#282142] border border-gray-600 text-gray-100'>
+              <p
+                  onClick={() => {
+                    setShowMenu(false);
+                    navigate('/profile');
+                  }}
+                  className='cursor-pointer text-sm'
+                >
+              Edit Profile
+              </p>
               <hr className='my-2 border-t border-gray-500'/>
-              <p onClick={()=>logout()} className='cursor-pointer text-sm'>Logout</p>
-            </div>
+              <p
+                onClick={() => {
+                  setShowMenu(false);
+                  logout();
+                }}
+                className='cursor-pointer text-sm'
+              >
+                Logout
+              </p>
+            </div>)}
           </div>
         </div>
 
